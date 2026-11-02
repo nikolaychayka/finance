@@ -154,7 +154,9 @@ h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
 .field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:.5px solid var(--sep)}
 .field:last-child{border-bottom:0}
 .field input{flex:1;background:none;border:0;outline:0;text-align:right;font-size:17px;min-width:0}
-.field input[type=date]{color:var(--accent);-webkit-appearance:none;appearance:none;min-height:24px}
+.field input[type=date]{color:var(--accent);-webkit-appearance:none;appearance:none;min-height:24px;text-align:right;display:flex;justify-content:flex-end;padding:0;margin:0}
+.field input[type=date]::-webkit-date-and-time-value{text-align:right;margin:0;padding:0}
+.field input[type=date]::-webkit-datetime-edit{padding:0}
 .btn{display:block;width:100%;text-align:center;padding:15px;border-radius:14px;font-size:17px;font-weight:600;margin-top:14px}
 .btn.primary{background:var(--accent);color:#fff}
 .btn.primary:disabled{opacity:.6}
@@ -240,7 +242,7 @@ h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
 <script>
 'use strict';
 /* ============ Справочники ============ */
-const APP_VERSION = '1.1';
+const APP_VERSION = '1.2';
 const KEY = 'finapp.v1';
 
 const CURRENCIES = {
