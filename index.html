@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Финансы">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Мои финансы</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#000;--card:#1C1C1E;--card2:#2C2C2E;--fill:rgba(118,118,128,.24);
+  --sep:rgba(84,84,88,.65);--text:#fff;--muted:#8E8E93;--muted2:#636366;
+  --accent:#0A84FF;--green:#30D158;--red:#FF453A;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:17px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body{padding-top:var(--st);padding-bottom:calc(88px + var(--sb));overscroll-behavior-y:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+input{font:inherit;color:inherit}
+.screen{padding:0 16px 24px;max-width:560px;margin:0 auto}
+.screen[hidden]{display:none}
+h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px}
+.card.list{padding:0 16px}
+.muted{color:var(--muted)}
+.hint{color:var(--muted);font-size:13px;margin:10px 2px 0}
+.group-title{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.4px;margin:22px 16px 7px}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;margin:22px 4px 8px}
+.section-head h2{font-size:22px;margin:0}
+.link{color:var(--accent);font-size:17px}
+.link.strong{font-weight:600}
+
+/* month switch */
+.month{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
+.month span{font-size:17px;font-weight:600}
+.month button{width:40px;height:36px;border-radius:10px;background:var(--card);color:var(--accent);font-size:22px;display:grid;place-items:center}
+
+/* balance */
+.balance{padding:18px 18px 16px;background:linear-gradient(145deg,#1f2a44 0%,#1C1C1E 55%)}
+.bal-top{display:flex;justify-content:space-between;align-items:center}
+.cur-toggle{display:flex;background:rgba(0,0,0,.35);border-radius:9px;padding:2px}
+.cur-toggle button{padding:4px 10px;border-radius:7px;font-size:14px;font-weight:600;color:var(--muted)}
+.cur-toggle button.on{background:#48484A;color:#fff}
+.big{font-size:40px;font-weight:700;letter-spacing:-.5px;margin:6px 0 14px;font-variant-numeric:tabular-nums}
+.big.neg{color:var(--red)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.split>div{background:rgba(0,0,0,.28);border-radius:12px;padding:10px 12px}
+.split small{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.split b{display:block;font-size:19px;margin-top:2px;font-variant-numeric:tabular-nums}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.green{color:var(--green)}.red{color:var(--red)}
+
+/* segmented */
+.seg{display:flex;background:var(--fill);border-radius:9px;padding:2px;margin-bottom:14px}
+.seg button{flex:1;text-align:center;padding:7px 0;border-radius:7px;font-size:14px;font-weight:600;color:#ddd;transition:background .15s}
+.seg button.on{background:#636366;color:#fff}
+
+/* chart */
+.chart-wrap{position:relative;width:200px;height:200px;margin:4px auto 10px}
+.donut{width:100%;height:100%}
+.donut circle{transition:stroke-dasharray .4s}
+.chart-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.chart-center small{color:var(--muted);font-size:13px}
+.chart-center b{font-size:22px;font-variant-numeric:tabular-nums}
+
+/* rows */
+.row{display:flex;align-items:center;gap:12px;width:100%;padding:11px 0;border-bottom:.5px solid var(--sep);min-height:58px}
+.row:last-child{border-bottom:0}
+.row:active{opacity:.6}
+.ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:21px;flex:none}
+.grow{flex:1;min-width:0;display:flex;flex-direction:column}
+.grow .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.amt{text-align:right;font-variant-numeric:tabular-nums;flex:none;display:flex;flex-direction:column;align-items:flex-end}
+.amt.income>span:first-child{color:var(--green)}
+.bar{height:4px;border-radius:2px;background:var(--card2);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:2px}
+.chev{color:var(--muted2);font-size:20px;flex:none}
+.empty{color:var(--muted);text-align:center;padding:28px 10px;font-size:15px}
+.empty .e{font-size:40px;display:block;margin-bottom:8px}
+
+/* history */
+.search{display:flex;align-items:center;gap:8px;background:var(--fill);border-radius:10px;padding:8px 10px;margin-bottom:10px}
+.search input{flex:1;background:none;border:0;outline:0;font-size:17px;min-width:0}
+.search svg{flex:none}
+.day-head{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.3px;margin:18px 4px 6px}
+.chip-filter{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border-radius:16px;padding:6px 12px;font-size:14px;margin-bottom:10px}
+.summary-line{display:flex;gap:14px;font-size:14px;color:var(--muted);margin:0 4px 4px}
+
+/* settings */
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:13px 0;border-bottom:.5px solid var(--sep)}
+.set-row:last-child{border-bottom:0}
+.set-row .val{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.set-row.btn-row{color:var(--accent)}
+.set-row.danger{color:var(--red)}
+.chips{display:flex;gap:8px}
+.chips.wrap{flex-wrap:wrap}
+.chips.scroll{overflow-x:auto;scrollbar-width:none;padding:2px 0 4px;margin:0 -16px;padding-left:16px;padding-right:16px}
+.chips.scroll::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:7px 13px;border-radius:18px;background:var(--card2);font-size:15px;font-weight:500;white-space:nowrap}
+.chip.on{background:var(--accent);color:#fff}
+.chip.locked{opacity:.85}
+.warn{background:rgba(255,159,10,.14);color:#FFB340;border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:12px}
+.foot{color:var(--muted2);font-size:13px;text-align:center;margin:26px 0 6px}
+
+/* install banner */
+.install{display:flex;gap:12px;align-items:flex-start;background:var(--card);border-radius:16px;padding:14px;margin-bottom:14px;font-size:15px}
+.install .x{color:var(--muted);font-size:20px;line-height:1;margin-left:auto}
+
+/* tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;justify-content:space-around;align-items:flex-start;padding:6px 6px calc(6px + var(--sb));background:rgba(22,22,24,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid var(--sep)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:500;color:var(--muted);padding-top:3px;text-align:center}
+.tab svg{width:26px;height:26px}
+.tab.on{color:var(--accent)}
+.fab-slot{flex:1;display:flex;justify-content:center}
+.fab{width:58px;height:58px;border-radius:50%;background:var(--accent);display:grid;place-items:center;margin-top:-24px;box-shadow:0 6px 22px rgba(10,132,255,.5);border:4px solid #000}
+.fab:active{transform:scale(.94)}
+
+/* sheet */
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20;opacity:0;transition:opacity .25s}
+.backdrop.show{opacity:1}
+.sheet{position:fixed;left:0;right:0;top:calc(var(--st) + 10px);bottom:0;z-index:21;background:#1C1C1E;border-radius:14px 14px 0 0;transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.85,.25,1);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px calc(24px + var(--sb));max-width:560px;margin:0 auto}
+.sheet.show{transform:none}
+.sheet-head{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 0 12px;background:#1C1C1E;margin-bottom:6px}
+.sheet-head b{font-size:17px}
+.sheet-head .link:last-child{justify-self:end}
+.sheet .seg{background:rgba(118,118,128,.24)}
+.amount-wrap{display:flex;align-items:baseline;justify-content:center;gap:6px;margin:14px 0 12px}
+.amount-wrap input{width:100%;max-width:280px;background:none;border:0;outline:0;text-align:right;font-size:48px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.amount-wrap input::placeholder{color:#48484A}
+.amount-wrap span{font-size:34px;font-weight:600;color:var(--muted);min-width:40px}
+.rate-line{font-size:14px;color:var(--muted);text-align:center;margin:8px 0 4px;min-height:20px}
+.rate-line button{color:var(--accent);font-size:14px;margin-left:6px}
+.rate-line input{width:90px;background:var(--card2);border:0;border-radius:8px;padding:5px 8px;text-align:center;font-size:16px;outline:0}
+.label{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.4px;margin:18px 4px 10px}
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 6px}
+.cat-item{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:#ddd;text-align:center}
+.cat-item .ic{width:54px;height:54px;font-size:26px;transition:box-shadow .15s,transform .15s}
+.cat-item.on .ic{box-shadow:0 0 0 3px #1C1C1E,0 0 0 5px var(--c);transform:scale(1.04)}
+.cat-item.on{color:#fff;font-weight:600}
+.cat-grid.err .ic{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.inset{background:var(--card2);padding:0 14px;margin-top:20px}
+.field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:.5px solid var(--sep)}
+.field:last-child{border-bottom:0}
+.field input{flex:1;background:none;border:0;outline:0;text-align:right;font-size:17px;min-width:0}
+.field input[type=date]{color:var(--accent);-webkit-appearance:none;appearance:none;min-height:24px}
+.btn{display:block;width:100%;text-align:center;padding:15px;border-radius:14px;font-size:17px;font-weight:600;margin-top:14px}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.primary:disabled{opacity:.6}
+.btn.danger{background:rgba(255,69,58,.14);color:var(--red)}
+.swatches{display:flex;flex-wrap:wrap;gap:12px;padding:4px 2px}
+.sw{width:36px;height:36px;border-radius:50%}
+.sw.on{box-shadow:0 0 0 3px #1C1C1E,0 0 0 5px #fff}
+.preview{display:flex;justify-content:center;margin:10px 0 4px}
+.preview .ic{width:76px;height:76px;font-size:38px}
+
+/* alert */
+.alert-wrap{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.5);display:grid;place-items:center;padding:30px;opacity:0;transition:opacity .2s}
+.alert-wrap.show{opacity:1}
+.alert{background:#2C2C2E;border-radius:14px;width:100%;max-width:290px;text-align:center;overflow:hidden}
+.alert b{display:block;padding:18px 16px 4px;font-size:17px}
+.alert p{margin:0;padding:0 16px 18px;font-size:13px;color:#ccc}
+.alert-btns{display:flex;border-top:.5px solid var(--sep)}
+.alert-btns button{flex:1;padding:12px;text-align:center;color:var(--accent);font-size:17px}
+.alert-btns button+button{border-left:.5px solid var(--sep);font-weight:600}
+.alert-btns .danger{color:var(--red)}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:calc(100px + var(--sb));transform:translate(-50%,20px);background:#3A3A3C;color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;z-index:50;opacity:0;pointer-events:none;transition:all .25s;max-width:calc(100% - 40px);text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<section class="screen" id="screen-overview"></section>
+
+<section class="screen" id="screen-history" hidden>
+  <h1>История</h1>
+  <div class="month">
+    <button data-a="month" data-d="-1" aria-label="Предыдущий месяц">‹</button>
+    <span id="hist-month"></span>
+    <button data-a="month" data-d="1" aria-label="Следующий месяц">›</button>
+  </div>
+  <div class="search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="hist-q" type="search" placeholder="Поиск по заметкам и категориям" autocomplete="off">
+  </div>
+  <div class="seg" id="hist-type">
+    <button data-a="hf-type" data-type="all">Все</button>
+    <button data-a="hf-type" data-type="expense">Расходы</button>
+    <button data-a="hf-type" data-type="income">Доходы</button>
+  </div>
+  <div id="hist-cat"></div>
+  <div id="hist-summary" class="summary-line"></div>
+  <div id="hist-list"></div>
+</section>
+
+<section class="screen" id="screen-categories" hidden></section>
+
+<section class="screen" id="screen-settings" hidden></section>
+
+<nav class="tabbar">
+  <button class="tab on" data-a="tab" data-tab="overview">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9h-9z" opacity=".9"/><path d="M14 1.5V10h8.5A8.5 8.5 0 0 0 14 1.5z"/></svg>
+    Обзор
+  </button>
+  <button class="tab" data-a="tab" data-tab="history">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></svg>
+    История
+  </button>
+  <div class="fab-slot">
+    <button class="fab" data-a="add" aria-label="Добавить операцию">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </div>
+  <button class="tab" data-a="tab" data-tab="categories">
+    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2.2"/><rect x="13" y="3" width="8" height="8" rx="2.2"/><rect x="3" y="13" width="8" height="8" rx="2.2"/><circle cx="17" cy="17" r="4.2"/></svg>
+    Категории
+  </button>
+  <button class="tab" data-a="tab" data-tab="settings">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
+    Настройки
+  </button>
+</nav>
+
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+<div id="toast" role="status"></div>
+
+<script>
+'use strict';
+/* ============ Справочники ============ */
+const APP_VERSION = '1.0';
+const KEY = 'finapp.v1';
+
+const CURRENCIES = {
+  GEL:{sym:'₾',  name:'Грузинский лари'},
+  USD:{sym:'$',  name:'Доллар США'},
+  EUR:{sym:'€',  name:'Евро'},
+  RUB:{sym:'₽',  name:'Российский рубль'},
+  TRY:{sym:'₺',  name:'Турецкая лира'},
+  GBP:{sym:'£',  name:'Фунт стерлингов'},
+  AMD:{sym:'֏',  name:'Армянский драм'},
+  AZN:{sym:'₼',  name:'Азербайджанский манат'},
+  UAH:{sym:'₴',  name:'Гривна'},
+  KZT:{sym:'₸',  name:'Тенге'},
+  AED:{sym:'AED',name:'Дирхам ОАЭ'},
+  CHF:{sym:'CHF',name:'Швейцарский франк'},
+  CNY:{sym:'¥',  name:'Юань'},
+  JPY:{sym:'JP¥',name:'Иена'},
+  PLN:{sym:'zł', name:'Злотый'},
+  ILS:{sym:'₪',  name:'Шекель'},
+  CAD:{sym:'C$', name:'Канадский доллар'}
+};
+// Примерные курсы на случай, если интернет ни разу не был доступен
+const FALLBACK_GEL_PER = {GEL:1, USD:2.62, EUR:2.99};
+
+const GROUPS = {needs:'Обязательное', wants:'Желания', savings:'Сбережения'};
+const COLORS = ['#FF453A','#FF9F0A','#FFD60A','#30D158','#64D2FF','#0A84FF','#5E5CE6','#BF5AF2','#FF375F','#FF6482','#AC8E68','#8E8E93'];
+const PROTECTED = ['other','income_other'];
+
+const DEFAULT_CATS = [
+  {id:'mandatory', type:'expense', name:'Обязательные', emoji:'🏠', color:'#5E5CE6', group:'needs'},
+  {id:'food',      type:'expense', name:'Еда',          emoji:'🍔', color:'#FF9F0A', group:'needs'},
+  {id:'transport', type:'expense', name:'Транспорт',    emoji:'🚗', color:'#0A84FF', group:'needs'},
+  {id:'health',    type:'expense', name:'Здоровье',     emoji:'💊', color:'#30D158', group:'needs'},
+  {id:'fun',       type:'expense', name:'Развлечения',  emoji:'🎉', color:'#FF375F', group:'wants'},
+  {id:'shopping',  type:'expense', name:'Покупки',      emoji:'🛍️', color:'#BF5AF2', group:'wants'},
+  {id:'gifts',     type:'expense', name:'Подарки',      emoji:'🎁', color:'#FF6482', group:'wants'},
+  {id:'education', type:'expense', name:'Образование',  emoji:'📚', color:'#FFD60A', group:'wants'},
+  {id:'savings',   type:'expense', name:'Сбережения',   emoji:'💰', color:'#64D2FF', group:'savings'},
+  {id:'other',     type:'expense', name:'Прочее',       emoji:'📦', color:'#8E8E93', group:'wants'},
+  {id:'salary',    type:'income',  name:'Зарплата',     emoji:'💼', color:'#30D158'},
+  {id:'side',      type:'income',  name:'Подработка',   emoji:'💻', color:'#64D2FF'},
+  {id:'gift_in',   type:'income',  name:'Подарки',      emoji:'🎁', color:'#FF6482'},
+  {id:'cashback',  type:'income',  name:'Кэшбэк',       emoji:'💳', color:'#FFD60A'},
+  {id:'income_other', type:'income', name:'Прочее',     emoji:'➕', color:'#8E8E93'}
+];
+
+/* ============ Утилиты ============ */
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2,'0');
+const uid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+const round = (v, d=4) => Math.round(v * 10**d) / 10**d;
+function todayStr(){ const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function yesterdayStr(){ const d = new Date(); d.setDate(d.getDate()-1); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+function monthLabel(ym){ const [y,m] = ym.split('-').map(Number); return `${MONTHS[m-1]} ${y}`; }
+function shiftMonth(ym, d){ let [y,m] = ym.split('-').map(Number); m += d; while(m<1){m+=12;y--} while(m>12){m-=12;y++} return `${y}-${pad(m)}`; }
+function dayLabel(ds){
+  if (ds === todayStr()) return 'Сегодня';
+  if (ds === yesterdayStr()) return 'Вчера';
+  const d = new Date(ds + 'T12:00:00');
+  const opts = {day:'numeric', month:'long', weekday:'short'};
+  if (d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
+  return d.toLocaleDateString('ru-RU', opts);
+}
+const nfInt = new Intl.NumberFormat('ru-RU', {maximumFractionDigits:0});
+const nfDec = new Intl.NumberFormat('ru-RU', {minimumFractionDigits:2, maximumFractionDigits:2});
+function num(v){ const r = Math.round(Math.abs(v)*100)/100; return Number.isInteger(r) ? nfInt.format(r) : nfDec.format(r); }
+function sym(cur){ return (CURRENCIES[cur] && CURRENCIES[cur].sym) || cur; }
+function money(v, cur){ return num(v) + ' ' + sym(cur); }
+function signed(v, cur, type){ return (type === 'income' ? '+' : '−') + money(v, cur); }
+function fmtRate(r){ return new Intl.NumberFormat('ru-RU', {maximumFractionDigits: r < 0.1 ? 6 : 4}).format(r); }
+function parseAmount(s){ const v = parseFloat(String(s).replace(/\s/g,'').replace(',', '.')); return isFinite(v) ? v : NaN; }
+function firstGrapheme(s){
+  s = String(s || '').trim();
+  if (!s) return '';
+  if (window.Intl && Intl.Segmenter){ for (const {segment} of new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(s)) return segment; }
+  return Array.from(s)[0];
+}
+let toastTimer;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 2600); }
+
+/* ============ Данные ============ */
+function defaultState(){
+  return {
+    v:1,
+    txs:[],
+    cats: DEFAULT_CATS.map(c => ({...c})),
+    settings:{display:'GEL', currencies:['GEL','USD','EUR'], lastCurrency:'GEL', lastBackup:null, installHidden:false},
+    rates:{gelPer:{...FALLBACK_GEL_PER}, date:null, source:'approx', fetchedAt:0},
+    rateCache:{}
+  };
+}
+function migrate(d){
+  const def = defaultState();
+  if (!d || typeof d !== 'object') return def;
+  d.settings = {...def.settings, ...(d.settings || {})};
+  if (!Array.isArray(d.settings.currencies) || !d.settings.currencies.includes('GEL')) d.settings.currencies = ['GEL', ...(d.settings.currencies || []).filter(c => c !== 'GEL')];
+  d.rates = (d.rates && d.rates.gelPer) ? d.rates : def.rates;
+  d.rateCache = d.rateCache || {};
+  d.txs = Array.isArray(d.txs) ? d.txs : [];
+  d.cats = (Array.isArray(d.cats) && d.cats.length) ? d.cats : def.cats;
+  for (const id of PROTECTED) if (!d.cats.some(c => c.id === id)) d.cats.push({...def.cats.find(c => c.id === id)});
+  d.v = 1;
+  return d;
+}
+function load(){
+  try { const raw = localStorage.getItem(KEY); if (raw) return migrate(JSON.parse(raw)); }
+  catch(e){ console.warn('load failed', e); }
+  return defaultState();
+}
+let S = load();
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch(e){ toast('Не удалось сохранить данные на устройстве'); }
+}
+const UNKNOWN_CAT = {id:'?', name:'Без категории', emoji:'❔', color:'#8E8E93'};
+const catById = id => S.cats.find(c => c.id === id) || UNKNOWN_CAT;
+const catsOf = type => S.cats.filter(c => c.type === type);
+
+/* ============ Курсы валют ============ */
+async function fetchJSON(url, ms=7000){
+  const ctrl = new AbortController(); const timer = setTimeout(()=>ctrl.abort(), ms);
+  try { const r = await fetch(url, {signal:ctrl.signal, cache:'no-store'}); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); }
+  finally { clearTimeout(timer); }
+}
+function onlyKnown(map){ const out = {GEL:1}; for (const k of Object.keys(CURRENCIES)) if (map[k] > 0) out[k] = round(map[k], 6); return out; }
+// 1) Национальный банк Грузии — официальный курс
+async function fromNBG(date){
+  const j = await fetchJSON('https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/en/json/' + (date ? `?date=${date}` : ''));
+  const day = j[0]; const m = {};
+  for (const c of day.currencies) if (c.rate > 0 && c.quantity > 0) m[c.code] = c.rate / c.quantity;
+  if (!m.USD) throw new Error('no USD');
+  return {gelPer:onlyKnown(m), date:String(day.date).slice(0,10), source:'Национальный банк Грузии'};
+}
+// 2) Открытый сервис курсов (есть и история)
+async function fromCurrencyApi(date){
+  const tag = date || 'latest'; let j;
+  try { j = await fetchJSON(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${tag}/v1/currencies/gel.json`); }
+  catch(e){ j = await fetchJSON(`https://${tag}.currency-api.pages.dev/v1/currencies/gel.json`); }
+  const m = {}; for (const [k,v] of Object.entries(j.gel || {})) if (v > 0) m[k.toUpperCase()] = 1 / v;
+  if (!m.USD) throw new Error('no USD');
+  return {gelPer:onlyKnown(m), date:j.date, source:'currency-api'};
+}
+// 3) Запасной источник (только текущий курс)
+async function fromER(){
+  const j = await fetchJSON('https://open.er-api.com/v6/latest/GEL');
+  if (j.result !== 'success') throw new Error('er-api');
+  const m = {}; for (const [k,v] of Object.entries(j.rates)) if (v > 0) m[k] = 1 / v;
+  return {gelPer:onlyKnown(m), date:new Date(j.time_last_update_unix*1000).toISOString().slice(0,10), source:'open.er-api.com'};
+}
+async function getRates(date){
+  const tries = date ? [()=>fromNBG(date), ()=>fromCurrencyApi(date)] : [()=>fromNBG(), ()=>fromCurrencyApi(), ()=>fromER()];
+  let err; for (const f of tries){ try { return await f(); } catch(e){ err = e; } }
+  throw err;
+}
+let ratesLoading = false;
+async function refreshRates(manual){
+  if (ratesLoading) return;
+  ratesLoading = true; if (UI.tab === 'settings') renderSettings();
+  try {
+    const r = await getRates();
+    S.rates = {...r, gelPer:{...S.rates.gelPer, ...r.gelPer}, fetchedAt:Date.now()};
+    save(); if (manual) toast('Курсы обновлены');
+  } catch(e){
+    if (manual) toast('Не удалось обновить курсы. Проверьте интернет');
+  } finally { ratesLoading = false; renderAll(); }
+}
+function maybeRefreshRates(){ if (navigator.onLine !== false && Date.now() - (S.rates.fetchedAt || 0) > 3*3600*1000) refreshRates(false); }
+// Курсы на конкретную дату (для операций задним числом)
+async function ratesForDate(date){
+  if (date >= todayStr() || date === S.rates.date) return S.rates.gelPer;
+  if (S.rateCache[date]) return {...S.rates.gelPer, ...S.rateCache[date]};
+  try {
+    const r = await getRates(date);
+    S.rateCache[date] = r.gelPer;
+    const keys = Object.keys(S.rateCache).sort(); while (keys.length > 300) delete S.rateCache[keys.shift()];
+    return {...S.rates.gelPer, ...r.gelPer};
+  } catch(e){ return S.rates.gelPer; }
+}
+
+/* ============ Состояние интерфейса ============ */
+const UI = {tab:'overview', month: todayStr().slice(0,7), ovType:'expense', hf:{type:'all', cat:null, q:''}};
+const val = t => S.settings.display === 'USD' ? t.usd : t.gel;
+const monthTx = () => S.txs.filter(t => t.date.slice(0,7) === UI.month);
+const sortTx = arr => arr.sort((a,b) => b.date.localeCompare(a.date) || (b.createdAt||0) - (a.createdAt||0));
+
+function renderAll(){ renderOverview(); renderHistory(); renderCategories(); renderSettings(); }
+
+function txRow(t, withDate){
+  const c = catById(t.categoryId), D = S.settings.display;
+  const orig = t.currency !== D ? `<span class="sub">${money(t.amount, t.currency)}</span>` : '';
+  const subtitle = [withDate ? dayLabel(t.date) : '', t.note ? esc(t.note) : ''].filter(Boolean).join(' · ') || (t.type === 'income' ? 'Доход' : 'Расход');
+  return `<button class="row" data-a="edit" data-id="${esc(t.id)}">
+    <span class="ic" style="background:${c.color}33">${esc(c.emoji)}</span>
+    <span class="grow"><span class="t">${esc(c.name)}</span><span class="sub">${subtitle}</span></span>
+    <span class="amt ${t.type}"><span>${signed(val(t), D, t.type)}</span>${orig}</span>
+  </button>`;
+}
+function monthSwitch(){
+  return `<div class="month">
+    <button data-a="month" data-d="-1" aria-label="Предыдущий месяц">‹</button>
+    <span>${monthLabel(UI.month)}</span>
+    <button data-a="month" data-d="1" aria-label="Следующий месяц">›</button>
+  </div>`;
+}
+function donut(rows, total){
+  const R = 54, C = 2*Math.PI*R; let acc = 0, segs = '';
+  const gap = rows.length > 1 ? 2 : 0;
+  for (const r of rows){
+    const len = total > 0 ? r.sum/total*C : 0; const d = Math.max(len - gap, 0.001);
+    segs += `<circle r="${R}" cx="70" cy="70" fill="none" stroke="${r.cat.color}" stroke-width="18" stroke-dasharray="${d} ${C-d}" stroke-dashoffset="${-acc}"/>`;
+    acc += len;
+  }
+  return `<svg viewBox="0 0 140 140" class="donut"><g transform="rotate(-90 70 70)"><circle r="${R}" cx="70" cy="70" fill="none" stroke="#2C2C2E" stroke-width="18"/>${segs}</g></svg>`;
+}
+
+/* ---------- Обзор ---------- */
+function renderOverview(){
+  const D = S.settings.display, txs = monthTx();
+  let inc = 0, exp = 0;
+  for (const t of txs) t.type === 'income' ? inc += val(t) : exp += val(t);
+  const left = inc - exp;
+  const type = UI.ovType, total = type === 'income' ? inc : exp;
+  const by = new Map();
+  for (const t of txs) if (t.type === type) by.set(t.categoryId, (by.get(t.categoryId)||0) + val(t));
+  const rows = [...by].map(([id,sum]) => ({cat:catById(id), id, sum})).sort((a,b) => b.sum - a.sum);
+  const recent = sortTx(txs.slice()).slice(0,5);
+
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const standalone = window.navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+  const install = (isIOS && !standalone && !S.settings.installHidden) ? `
+    <div class="install"><span style="font-size:26px">📲</span>
+      <span>Установите приложение: нажмите <b>«Поделиться»</b> внизу Safari, затем <b>«На экран „Домой“»</b>.</span>
+      <button class="x" data-a="hide-install" aria-label="Скрыть">×</button></div>` : '';
+
+  const legend = rows.map(r => {
+    const pct = total > 0 ? r.sum/total*100 : 0;
+    return `<button class="row" data-a="cat-history" data-id="${esc(r.id)}" data-type="${type}">
+      <span class="ic" style="background:${r.cat.color}33">${esc(r.cat.emoji)}</span>
+      <span class="grow"><span class="t">${esc(r.cat.name)} <span class="muted" style="font-size:14px">${pct < 1 && pct > 0 ? '<1' : Math.round(pct)}%</span></span>
+        <span class="bar"><i style="width:${pct}%;background:${r.cat.color}"></i></span></span>
+      <span class="amt"><span>${money(r.sum, D)}</span></span>
+    </button>`;
+  }).join('');
+
+  $('#screen-overview').innerHTML = `
+    <h1>Обзор</h1>
+    ${install}
+    ${monthSwitch()}
+    <div class="card balance">
+      <div class="bal-top"><span class="muted">Остаток за месяц</span>
+        <div class="cur-toggle">
+          <button data-a="display" data-cur="GEL" class="${D==='GEL'?'on':''}">₾</button>
+          <button data-a="display" data-cur="USD" class="${D==='USD'?'on':''}">$</button>
+        </div></div>
+      <div class="big ${left < 0 ? 'neg' : ''}">${left < 0 ? '−' : ''}${money(left, D)}</div>
+      <div class="split">
+        <div><small><span class="dot" style="background:var(--green)"></span>Доходы</small><b class="green">+${money(inc, D)}</b></div>
+        <div><small><span class="dot" style="background:var(--red)"></span>Расходы</small><b>−${money(exp, D)}</b></div>
+      </div>
+    </div>
+    <div class="seg">
+      <button data-a="ov-type" data-type="expense" class="${type==='expense'?'on':''}">Расходы</button>
+      <button data-a="ov-type" data-type="income" class="${type==='income'?'on':''}">Доходы</button>
+    </div>
+    <div class="card">
+      ${rows.length ? `
+        <div class="chart-wrap">${donut(rows, total)}
+          <div class="chart-center"><small>${type==='income'?'Доходы':'Расходы'}</small><b>${money(total, D)}</b></div></div>
+        <div>${legend}</div>`
+      : `<div class="empty"><span class="e">${type==='income'?'💵':'🧾'}</span>За ${monthLabel(UI.month).toLowerCase()} пока нет ${type==='income'?'доходов':'расходов'}.<br>Нажмите «+», чтобы добавить.</div>`}
+    </div>
+    ${recent.length ? `
+      <div class="section-head"><h2>Последние</h2><button class="link" data-a="tab" data-tab="history">Все</button></div>
+      <div class="card list">${recent.map(t => txRow(t, true)).join('')}</div>` : ''}
+  `;
+}
+
+/* ---------- История ---------- */
+function renderHistory(){
+  const D = S.settings.display, hf = UI.hf;
+  $('#hist-month').textContent = monthLabel(UI.month);
+  for (const b of $('#hist-type').children) b.classList.toggle('on', b.dataset.type === hf.type);
+  const fc = hf.cat ? catById(hf.cat) : null;
+  $('#hist-cat').innerHTML = fc ? `<button class="chip-filter" data-a="hf-clear-cat">${esc(fc.emoji)} ${esc(fc.name)} <span class="muted">✕</span></button>` : '';
+
+  const q = hf.q.trim().toLowerCase();
+  let list = monthTx().filter(t =>
+    (hf.type === 'all' || t.type === hf.type) &&
+    (!hf.cat || t.categoryId === hf.cat) &&
+    (!q || (t.note||'').toLowerCase().includes(q) || catById(t.categoryId).name.toLowerCase().includes(q))
+  );
+  sortTx(list);
+  let inc = 0, exp = 0; for (const t of list) t.type === 'income' ? inc += val(t) : exp += val(t);
+  $('#hist-summary').innerHTML = list.length ? `<span>${list.length} опер.</span>${inc ? `<span class="green">+${money(inc,D)}</span>` : ''}${exp ? `<span>−${money(exp,D)}</span>` : ''}` : '';
+
+  if (!list.length){
+    $('#hist-list').innerHTML = `<div class="card"><div class="empty"><span class="e">🔍</span>${S.txs.length ? 'Ничего не найдено' : 'Здесь появятся ваши операции'}</div></div>`;
+    return;
+  }
+  const groups = [];
+  for (const t of list){ const g = groups[groups.length-1]; if (g && g.date === t.date) g.items.push(t); else groups.push({date:t.date, items:[t]}); }
+  $('#hist-list').innerHTML = groups.map(g => {
+    let net = 0; for (const t of g.items) net += t.type === 'income' ? val(t) : -val(t);
+    return `<div class="day-head"><span>${dayLabel(g.date)}</span><span>${net >= 0 ? '+' : '−'}${money(net, D)}</span></div>
+      <div class="card list">${g.items.map(t => txRow(t, false)).join('')}</div>`;
+  }).join('');
+}
+
+/* ---------- Настройки ---------- */
+function renderSettings(){
+  const D = S.settings.display, R = S.rates;
+  const fetched = R.fetchedAt ? new Date(R.fetchedAt).toLocaleString('ru-RU', {day:'numeric', month:'long', hour:'2-digit', minute:'2-digit'}) : null;
+  const rateRows = S.settings.currencies.filter(c => c !== 'GEL').map(c => `
+    <div class="set-row"><span>1 ${c} <span class="muted">${esc(CURRENCIES[c].name)}</span></span>
+      <span class="val">${R.gelPer[c] ? fmtRate(R.gelPer[c]) + ' ₾' : '—'}</span></div>`).join('');
+
+  const lastBackup = S.settings.lastBackup ? new Date(S.settings.lastBackup).toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}) : 'ещё не делали';
+
+  $('#screen-settings').innerHTML = `
+    <h1>Настройки</h1>
+    <div class="group-title">Валюта итогов</div>
+    <div class="card">
+      <div class="seg" style="margin:0">
+        <button data-a="display" data-cur="GEL" class="${D==='GEL'?'on':''}">Лари ₾</button>
+        <button data-a="display" data-cur="USD" class="${D==='USD'?'on':''}">Доллары $</button>
+      </div>
+      <p class="hint">Суммы в других валютах пересчитываются по курсу на день операции.</p>
+    </div>
+
+    <div class="group-title">Курсы валют</div>
+    ${R.source === 'approx' ? `<div class="warn">Сейчас используются примерные курсы. Подключитесь к интернету и нажмите «Обновить».</div>` : ''}
+    <div class="card list">
+      ${rateRows || '<div class="set-row"><span class="muted">Добавьте валюты ниже</span></div>'}
+      <button class="set-row btn-row" data-a="refresh-rates">${ratesLoading ? 'Обновляю…' : 'Обновить сейчас'}</button>
+    </div>
+    <p class="hint" style="margin:-6px 16px 0">${fetched ? `Обновлено ${fetched}${R.source !== 'approx' ? ' · ' + esc(R.source) : ''}. Курсы обновляются автоматически.` : 'Курсы ещё не загружались.'}</p>
+
+    <div class="group-title">Мои валюты</div>
+    <div class="card">
+      <div class="chips wrap">${Object.keys(CURRENCIES).map(c => `<button class="chip ${S.settings.currencies.includes(c)?'on':''} ${c==='GEL'?'locked':''}" data-a="toggle-cur" data-cur="${c}">${sym(c) !== c ? sym(c) + ' ' : ''}${c}</button>`).join('')}</div>
+      <p class="hint">Эти валюты будут предлагаться при добавлении операции.</p>
+    </div>
+
+    <div class="group-title">Данные</div>
+    <div class="card list">
+      <button class="set-row btn-row" data-a="export"><span>Сохранить копию</span><span class="val" style="font-size:14px">${lastBackup}</span></button>
+      <button class="set-row btn-row" data-a="import">Восстановить из копии</button>
+      <button class="set-row danger" data-a="wipe">Удалить все данные</button>
+    </div>
+    <p class="hint" style="margin:-6px 16px 0">Данные хранятся только на этом iPhone. Сохраняйте резервную копию в «Файлы» или iCloud Drive раз в пару недель.</p>
+    <p class="foot">Мои финансы · версия ${APP_VERSION}</p>
+  `;
+}
+
+
+/* ---------- Категории ---------- */
+function renderCategories(){
+  const catRows = type => catsOf(type).map(c => `
+    <button class="row" data-a="cat-edit" data-id="${esc(c.id)}">
+      <span class="ic" style="background:${c.color}33">${esc(c.emoji)}</span>
+      <span class="grow"><span class="t">${esc(c.name)}</span>${type==='expense' && c.group ? `<span class="sub">${GROUPS[c.group]}</span>` : ''}</span>
+      <span class="chev">›</span>
+    </button>`).join('') + `<button class="set-row btn-row" data-a="cat-add" data-type="${type}">＋ Добавить категорию</button>`;
+  $('#screen-categories').innerHTML = `
+    <h1>Категории</h1>
+    <div class="group-title">Расходы</div>
+    <div class="card list">${catRows('expense')}</div>
+    <div class="group-title">Доходы</div>
+    <div class="card list">${catRows('income')}</div>
+    <p class="hint" style="margin:0 16px">Нажмите на категорию, чтобы изменить название, иконку или цвет.</p>`;
+}
+
+/* ============ Шторки (sheets) ============ */
+let sheetEl = null, backEl = null;
+function openSheet(html){
+  closeSheet(true);
+  backEl = document.createElement('div'); backEl.className = 'backdrop'; backEl.dataset.a = 'close';
+  sheetEl = document.createElement('div'); sheetEl.className = 'sheet'; sheetEl.innerHTML = html;
+  document.body.append(backEl, sheetEl);
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => { backEl.classList.add('show'); sheetEl.classList.add('show'); });
+  return sheetEl;
+}
+function closeSheet(instant){
+  if (!sheetEl) return;
+  const s = sheetEl, b = backEl; sheetEl = backEl = null;
+  document.body.style.overflow = '';
+  if (instant){ s.remove(); b.remove(); return; }
+  s.classList.remove('show'); b.classList.remove('show');
+  setTimeout(() => { s.remove(); b.remove(); }, 320);
+}
+function confirmDialog(title, text, okText='Удалить', danger=true){
+  return new Promise(res => {
+    const w = document.createElement('div'); w.className = 'alert-wrap';
+    w.innerHTML = `<div class="alert"><b>${esc(title)}</b><p>${esc(text)}</p>
+      <div class="alert-btns"><button data-r="0">Отмена</button><button data-r="1" class="${danger?'danger':''}">${esc(okText)}</button></div></div>`;
+    document.body.appendChild(w); requestAnimationFrame(() => w.classList.add('show'));
+    w.addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (!b) return; w.remove(); res(b.dataset.r === '1'); });
+  });
+}
+
+/* ---------- Операция ---------- */
+let draft = null;
+function openTxSheet(tx){
+  const isEdit = !!tx;
+  draft = tx
+    ? {id:tx.id, type:tx.type, amount:String(tx.amount).replace('.', ','), currency:tx.currency, categoryId:tx.categoryId, date:tx.date, note:tx.note||'', rateManual:null, editingRate:false}
+    : {id:null, type:UI.ovType === 'income' && UI.tab === 'overview' ? 'income' : 'expense', amount:'', currency:S.settings.lastCurrency || 'GEL', categoryId:null, date:todayStr(), note:'', rateManual:null, editingRate:false};
+  if (!isEdit && !S.settings.currencies.includes(draft.currency)) draft.currency = 'GEL';
+  const s = openSheet(`
+    <div class="sheet-head"><button class="link" data-a="close">Отмена</button><b>${isEdit ? 'Операция' : 'Новая операция'}</b><button class="link strong" data-a="save-tx">Готово</button></div>
+    <div class="seg" id="tx-type">
+      <button data-a="tx-type" data-type="expense">Расход</button>
+      <button data-a="tx-type" data-type="income">Доход</button>
+    </div>
+    <div class="amount-wrap"><input id="tx-amount" inputmode="decimal" placeholder="0" autocomplete="off" enterkeyhint="done" aria-label="Сумма"><span id="tx-sym"></span></div>
+    <div class="chips scroll" id="tx-cur"></div>
+    <div class="rate-line" id="tx-rate"></div>
+    <div class="label">Категория</div>
+    <div class="cat-grid" id="tx-cats"></div>
+    <div class="card inset">
+      <label class="field"><span>Дата</span><input type="date" id="tx-date" max="2100-12-31"></label>
+      <label class="field"><span>Заметка</span><input id="tx-note" placeholder="Необязательно" maxlength="120" enterkeyhint="done"></label>
+    </div>
+    <button class="btn primary" data-a="save-tx" id="tx-save">Сохранить</button>
+    ${isEdit ? '<button class="btn danger" data-a="del-tx">Удалить операцию</button>' : ''}
+  `);
+  const amt = $('#tx-amount', s);
+  amt.value = draft.amount; $('#tx-date', s).value = draft.date; $('#tx-note', s).value = draft.note;
+  amt.addEventListener('input', () => {
+    let v = amt.value.replace(/[^\d.,]/g, '').replace('.', ',');
+    const i = v.indexOf(','); if (i >= 0) v = v.slice(0, i+1) + v.slice(i+1).replace(/,/g, '').slice(0, 2);
+    amt.value = v; draft.amount = v;
+  });
+  amt.addEventListener('keydown', e => { if (e.key === 'Enter') amt.blur(); });
+  $('#tx-date', s).addEventListener('change', e => { draft.date = e.target.value || todayStr(); renderTxRate(); });
+  $('#tx-note', s).addEventListener('input', e => { draft.note = e.target.value; });
+  $('#tx-note', s).addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
+  renderTxType(); renderTxCur(); renderTxRate(); renderTxCats();
+  if (!isEdit) amt.focus();
+}
+function renderTxType(){ for (const b of $('#tx-type', sheetEl).children) b.classList.toggle('on', b.dataset.type === draft.type); }
+function renderTxCur(){
+  const list = [...S.settings.currencies]; if (!list.includes(draft.currency)) list.push(draft.currency);
+  $('#tx-cur', sheetEl).innerHTML = list.map(c => `<button class="chip ${c===draft.currency?'on':''}" data-a="tx-cur" data-cur="${c}">${sym(c)!==c ? sym(c)+' ' : ''}${c}</button>`).join('');
+  $('#tx-sym', sheetEl).textContent = sym(draft.currency);
+}
+function currentDraftRate(){
+  if (draft.rateManual) return draft.rateManual;
+  const orig = draft.id && S.txs.find(t => t.id === draft.id);
+  if (orig && orig.currency === draft.currency && orig.date === draft.date) return orig.rate;
+  return S.rates.gelPer[draft.currency] || null;
+}
+function renderTxRate(){
+  const el = $('#tx-rate', sheetEl);
+  if (draft.currency === 'GEL'){ el.innerHTML = ''; return; }
+  const r = currentDraftRate();
+  if (draft.editingRate || !r){
+    el.innerHTML = `1 ${draft.currency} = <input id="tx-rate-in" inputmode="decimal" value="${r ? String(round(r,4)).replace('.',',') : ''}" placeholder="курс"> ₾`;
+    const inp = $('#tx-rate-in', el);
+    inp.addEventListener('input', () => { const v = parseAmount(inp.value); draft.rateManual = v > 0 ? v : null; });
+    if (draft.editingRate) inp.focus();
+    return;
+  }
+  const past = draft.date < todayStr() && !draft.rateManual;
+  el.innerHTML = `1 ${draft.currency} ≈ ${fmtRate(r)} ₾${past ? ' <span style="opacity:.75">· подставим курс на дату операции</span>' : ''}<button data-a="edit-rate">Изменить</button>`;
+}
+function renderTxCats(){
+  const cats = catsOf(draft.type);
+  $('#tx-cats', sheetEl).innerHTML = cats.map(c => `
+    <button class="cat-item ${c.id===draft.categoryId?'on':''}" data-a="tx-cat" data-id="${esc(c.id)}" style="--c:${c.color}">
+      <span class="ic" style="background:${c.color}33">${esc(c.emoji)}</span><span>${esc(c.name)}</span>
+    </button>`).join('');
+}
+async function saveTx(){
+  const amount = parseAmount(draft.amount);
+  if (!(amount > 0)){ toast('Введите сумму'); $('#tx-amount', sheetEl).focus(); return; }
+  if (!draft.categoryId || !S.cats.some(c => c.id === draft.categoryId && c.type === draft.type)){
+    toast('Выберите категорию'); const g = $('#tx-cats', sheetEl); g.classList.remove('err'); void g.offsetWidth; g.classList.add('err'); g.scrollIntoView({behavior:'smooth', block:'center'}); return;
+  }
+  const btn = $('#tx-save', sheetEl); btn.disabled = true; btn.textContent = 'Сохраняю…';
+  const orig = draft.id ? S.txs.find(t => t.id === draft.id) : null;
+  let rate, usdRate;
+  if (orig && !draft.rateManual && orig.currency === draft.currency && orig.date === draft.date){
+    rate = orig.rate; usdRate = orig.usdRate;
+  } else {
+    const gp = await ratesForDate(draft.date);
+    rate = draft.currency === 'GEL' ? 1 : (draft.rateManual || gp[draft.currency]);
+    usdRate = draft.currency === 'USD' ? rate : gp.USD;
+  }
+  if (!sheetEl){ return; }
+  if (!rate || !usdRate){
+    btn.disabled = false; btn.textContent = 'Сохранить';
+    draft.editingRate = true; renderTxRate(); toast(`Нет курса для ${draft.currency} — укажите его вручную`); return;
+  }
+  const gel = round(amount * rate, 4);
+  const tx = {
+    id: draft.id || uid(), type: draft.type, amount: round(amount, 2), currency: draft.currency,
+    rate: round(rate, 6), usdRate: round(usdRate, 6), gel, usd: draft.currency === 'USD' ? round(amount,2) : round(gel / usdRate, 4),
+    categoryId: draft.categoryId, date: draft.date, note: draft.note.trim(),
+    createdAt: orig ? orig.createdAt : Date.now(), updatedAt: Date.now()
+  };
+  if (orig) S.txs[S.txs.indexOf(orig)] = tx; else S.txs.push(tx);
+  S.settings.lastCurrency = draft.currency;
+  save(); closeSheet(); renderAll();
+  toast(orig ? 'Изменения сохранены' : 'Операция добавлена');
+}
+async function deleteTx(){
+  if (!(await confirmDialog('Удалить операцию?', 'Это действие нельзя отменить.'))) return;
+  S.txs = S.txs.filter(t => t.id !== draft.id); save(); closeSheet(); renderAll(); toast('Операция удалена');
+}
+
+/* ---------- Категория ---------- */
+let cdraft = null;
+function openCatSheet(cat, type){
+  const isNew = !cat;
+  cdraft = cat ? {...cat} : {id:uid(), type, name:'', emoji: type === 'income' ? '💵' : '🏷️', color: COLORS[Math.floor(Math.random()*COLORS.length)], group: type === 'expense' ? 'wants' : undefined, _new:true};
+  const s = openSheet(`
+    <div class="sheet-head"><button class="link" data-a="close">Отмена</button><b>${isNew ? 'Новая категория' : 'Категория'}</b><button class="link strong" data-a="save-cat">Готово</button></div>
+    <div class="preview"><span class="ic" id="cat-prev"></span></div>
+    <div class="card inset">
+      <label class="field"><span>Название</span><input id="cat-name" maxlength="24" placeholder="Например, Кофе" enterkeyhint="done"></label>
+      <label class="field"><span>Иконка (эмодзи)</span><input id="cat-emoji" maxlength="8" style="font-size:24px" enterkeyhint="done"></label>
+    </div>
+    <div class="label">Цвет</div>
+    <div class="swatches" id="cat-colors"></div>
+    ${cdraft.type === 'expense' ? `
+      <div class="label">Тип расхода</div>
+      <div class="seg" id="cat-group">${Object.entries(GROUPS).map(([g,n]) => `<button data-a="cat-group" data-g="${g}">${n}</button>`).join('')}</div>
+      <p class="hint" style="margin-top:-6px">Пригодится для правила 50/30/20: обязательное / желания / сбережения.</p>` : ''}
+    <button class="btn primary" data-a="save-cat">Сохранить</button>
+    ${!isNew && !PROTECTED.includes(cdraft.id) ? '<button class="btn danger" data-a="del-cat">Удалить категорию</button>' : ''}
+  `);
+  $('#cat-name', s).value = cdraft.name; $('#cat-emoji', s).value = cdraft.emoji;
+  $('#cat-name', s).addEventListener('input', e => cdraft.name = e.target.value);
+  $('#cat-emoji', s).addEventListener('input', e => { cdraft.emoji = firstGrapheme(e.target.value) || cdraft.emoji; renderCatPreview(); });
+  $('#cat-emoji', s).addEventListener('blur', e => { e.target.value = cdraft.emoji; });
+  for (const id of ['cat-name','cat-emoji']) $('#'+id, s).addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
+  renderCatPreview(); renderCatColors(); renderCatGroup();
+  if (isNew) $('#cat-name', s).focus();
+}
+function renderCatPreview(){ const p = $('#cat-prev', sheetEl); p.textContent = cdraft.emoji; p.style.background = cdraft.color + '33'; }
+function renderCatColors(){ $('#cat-colors', sheetEl).innerHTML = COLORS.map(c => `<button class="sw ${c===cdraft.color?'on':''}" style="background:${c}" data-a="cat-color" data-c="${c}" aria-label="Цвет"></button>`).join(''); }
+function renderCatGroup(){ const g = $('#cat-group', sheetEl); if (g) for (const b of g.children) b.classList.toggle('on', b.dataset.g === cdraft.group); }
+function saveCat(){
+  const name = cdraft.name.trim();
+  if (!name){ toast('Введите название'); $('#cat-name', sheetEl).focus(); return; }
+  const {_new, ...cat} = cdraft; cat.name = name;
+  const i = S.cats.findIndex(c => c.id === cat.id);
+  if (i >= 0) S.cats[i] = cat; else S.cats.push(cat);
+  save(); closeSheet(); renderAll(); toast(_new ? 'Категория добавлена' : 'Категория сохранена');
+}
+async function deleteCat(){
+  const used = S.txs.filter(t => t.categoryId === cdraft.id).length;
+  const fallback = cdraft.type === 'income' ? 'income_other' : 'other';
+  const text = used ? `${used} опер. из этой категории перейдут в «${catById(fallback).name}».` : 'Категория будет удалена.';
+  if (!(await confirmDialog(`Удалить «${cdraft.name}»?`, text))) return;
+  for (const t of S.txs) if (t.categoryId === cdraft.id) t.categoryId = fallback;
+  S.cats = S.cats.filter(c => c.id !== cdraft.id);
+  if (UI.hf.cat === cdraft.id) UI.hf.cat = null;
+  save(); closeSheet(); renderAll(); toast('Категория удалена');
+}
+
+/* ---------- Резервная копия ---------- */
+async function exportData(){
+  const json = JSON.stringify({app:'finapp', version:APP_VERSION, exportedAt:new Date().toISOString(), data:S});
+  const name = `finance-backup-${todayStr()}.json`;
+  const file = new File([json], name, {type:'application/json'});
+  const done = () => { S.settings.lastBackup = Date.now(); save(); renderSettings(); };
+  if (navigator.canShare && navigator.canShare({files:[file]})){
+    try { await navigator.share({files:[file], title:'Резервная копия финансов'}); done(); toast('Копия сохранена'); return; }
+    catch(e){ if (e.name === 'AbortError') return; }
+  }
+  const url = URL.createObjectURL(file); const a = document.createElement('a');
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000); done(); toast('Файл копии скачан');
+}
+function importData(file){
+  const r = new FileReader();
+  r.onload = async () => {
+    let d;
+    try { const j = JSON.parse(r.result); d = j.data || j; if (!Array.isArray(d.txs) || !Array.isArray(d.cats)) throw 0; }
+    catch(e){ toast('Это не похоже на файл резервной копии'); return; }
+    if (!(await confirmDialog('Восстановить копию?', `Текущие данные на телефоне будут заменены. В копии операций: ${d.txs.length}.`, 'Восстановить', false))) return;
+    S = migrate(d); save(); UI.hf = {type:'all', cat:null, q:''}; $('#hist-q').value = ''; renderAll(); toast('Данные восстановлены');
+  };
+  r.readAsText(file);
+}
+
+/* ============ Навигация и события ============ */
+function setTab(tab){
+  UI.tab = tab;
+  for (const n of ['overview','history','categories','settings']) $('#screen-'+n).hidden = n !== tab;
+  for (const b of document.querySelectorAll('.tab')) b.classList.toggle('on', b.dataset.tab === tab);
+  window.scrollTo(0,0);
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const a = b.dataset.a;
+  switch (a){
+    case 'tab': setTab(b.dataset.tab); break;
+    case 'add': openTxSheet(null); break;
+    case 'close': closeSheet(); break;
+    case 'month': UI.month = shiftMonth(UI.month, +b.dataset.d); renderOverview(); renderHistory(); break;
+    case 'display': S.settings.display = b.dataset.cur; save(); renderAll(); break;
+    case 'ov-type': UI.ovType = b.dataset.type; renderOverview(); break;
+    case 'cat-history': UI.hf = {type:b.dataset.type, cat:b.dataset.id, q:''}; $('#hist-q').value = ''; renderHistory(); setTab('history'); break;
+    case 'hide-install': S.settings.installHidden = true; save(); renderOverview(); break;
+    case 'edit': { const t = S.txs.find(x => x.id === b.dataset.id); if (t) openTxSheet(t); break; }
+    case 'tx-type': draft.type = b.dataset.type; if (catById(draft.categoryId).type !== draft.type) draft.categoryId = null; renderTxType(); renderTxCats(); break;
+    case 'tx-cur': draft.currency = b.dataset.cur; draft.rateManual = null; draft.editingRate = false; renderTxCur(); renderTxRate(); break;
+    case 'tx-cat': draft.categoryId = b.dataset.id; renderTxCats(); break;
+    case 'edit-rate': draft.editingRate = true; renderTxRate(); break;
+    case 'save-tx': saveTx(); break;
+    case 'del-tx': deleteTx(); break;
+    case 'hf-type': UI.hf.type = b.dataset.type; renderHistory(); break;
+    case 'hf-clear-cat': UI.hf.cat = null; renderHistory(); break;
+    case 'refresh-rates': refreshRates(true); break;
+    case 'toggle-cur': {
+      const c = b.dataset.cur; if (c === 'GEL'){ toast('Лари — основная валюта'); break; }
+      const list = S.settings.currencies; S.settings.currencies = list.includes(c) ? list.filter(x => x !== c) : [...list, c];
+      save(); renderSettings(); if (!S.rates.gelPer[c]) refreshRates(false); break;
+    }
+    case 'cat-edit': { const c = S.cats.find(x => x.id === b.dataset.id); if (c) openCatSheet(c); break; }
+    case 'cat-add': openCatSheet(null, b.dataset.type); break;
+    case 'cat-color': cdraft.color = b.dataset.c; renderCatColors(); renderCatPreview(); break;
+    case 'cat-group': cdraft.group = b.dataset.g; renderCatGroup(); break;
+    case 'save-cat': saveCat(); break;
+    case 'del-cat': deleteCat(); break;
+    case 'export': exportData(); break;
+    case 'import': $('#import-file').click(); break;
+    case 'wipe':
+      if (await confirmDialog('Удалить все данные?', 'Все операции и настройки будут удалены с этого телефона. Сначала сохраните резервную копию, если она нужна.', 'Удалить всё')){
+        S = defaultState(); save(); renderAll(); toast('Данные удалены'); maybeRefreshRates();
+      }
+      break;
+  }
+});
+$('#hist-q').addEventListener('input', e => { UI.hf.q = e.target.value; renderHistory(); });
+$('#import-file').addEventListener('change', e => { const f = e.target.files[0]; if (f) importData(f); e.target.value = ''; });
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  const m = todayStr().slice(0,7); // новый месяц наступил, пока приложение было открыто
+  if (UI.lastSeenMonth && UI.lastSeenMonth !== m && UI.month === UI.lastSeenMonth) UI.month = m;
+  UI.lastSeenMonth = m; renderAll(); maybeRefreshRates();
+});
+window.addEventListener('online', maybeRefreshRates);
+
+/* ============ Старт ============ */
+UI.lastSeenMonth = UI.month;
+renderAll();
+maybeRefreshRates();
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
