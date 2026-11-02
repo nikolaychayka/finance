@@ -1,6 +1,6 @@
 // Позволяет приложению открываться без интернета.
 // Сначала пробуем загрузить свежую версию, без сети берём сохранённую.
-const CACHE = 'finapp-v1';
+const CACHE = 'finapp-v1.1';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

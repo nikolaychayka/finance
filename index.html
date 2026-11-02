@@ -133,10 +133,12 @@ h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
 .sheet-head b{font-size:17px}
 .sheet-head .link:last-child{justify-self:end}
 .sheet .seg{background:rgba(118,118,128,.24)}
-.amount-wrap{display:flex;align-items:baseline;justify-content:center;gap:6px;margin:14px 0 12px}
-.amount-wrap input{width:100%;max-width:280px;background:none;border:0;outline:0;text-align:right;font-size:48px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.amount-wrap{position:relative;display:flex;align-items:baseline;justify-content:center;gap:8px;margin:14px 0 12px}
+.amount-wrap input,.amount-wrap .measure{font-size:48px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.amount-wrap input{width:40px;max-width:calc(100% - 70px);background:none;border:0;outline:0;padding:0;text-align:center}
 .amount-wrap input::placeholder{color:#48484A}
-.amount-wrap span{font-size:34px;font-weight:600;color:var(--muted);min-width:40px}
+.amount-wrap .measure{position:absolute;visibility:hidden;white-space:pre;pointer-events:none;left:0;top:0}
+.amount-wrap .cur-sym{font-size:34px;font-weight:600;color:var(--muted)}
 .rate-line{font-size:14px;color:var(--muted);text-align:center;margin:8px 0 4px;min-height:20px}
 .rate-line button{color:var(--accent);font-size:14px;margin-left:6px}
 .rate-line input{width:90px;background:var(--card2);border:0;border-radius:8px;padding:5px 8px;text-align:center;font-size:16px;outline:0}
@@ -238,7 +240,7 @@ h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
 <script>
 'use strict';
 /* ============ Справочники ============ */
-const APP_VERSION = '1.0';
+const APP_VERSION = '1.1';
 const KEY = 'finapp.v1';
 
 const CURRENCIES = {
@@ -656,7 +658,7 @@ function openTxSheet(tx){
       <button data-a="tx-type" data-type="expense">Расход</button>
       <button data-a="tx-type" data-type="income">Доход</button>
     </div>
-    <div class="amount-wrap"><input id="tx-amount" inputmode="decimal" placeholder="0" autocomplete="off" enterkeyhint="done" aria-label="Сумма"><span id="tx-sym"></span></div>
+    <div class="amount-wrap"><input id="tx-amount" inputmode="decimal" placeholder="0" autocomplete="off" enterkeyhint="done" aria-label="Сумма"><span id="tx-sym" class="cur-sym"></span><span id="tx-measure" class="measure" aria-hidden="true"></span></div>
     <div class="chips scroll" id="tx-cur"></div>
     <div class="rate-line" id="tx-rate"></div>
     <div class="label">Категория</div>
@@ -673,14 +675,21 @@ function openTxSheet(tx){
   amt.addEventListener('input', () => {
     let v = amt.value.replace(/[^\d.,]/g, '').replace('.', ',');
     const i = v.indexOf(','); if (i >= 0) v = v.slice(0, i+1) + v.slice(i+1).replace(/,/g, '').slice(0, 2);
-    amt.value = v; draft.amount = v;
+    amt.value = v; draft.amount = v; fitAmount();
   });
   amt.addEventListener('keydown', e => { if (e.key === 'Enter') amt.blur(); });
   $('#tx-date', s).addEventListener('change', e => { draft.date = e.target.value || todayStr(); renderTxRate(); });
   $('#tx-note', s).addEventListener('input', e => { draft.note = e.target.value; });
   $('#tx-note', s).addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
-  renderTxType(); renderTxCur(); renderTxRate(); renderTxCats();
+  renderTxType(); renderTxCur(); renderTxRate(); renderTxCats(); fitAmount();
   if (!isEdit) amt.focus();
+}
+// Поле суммы подстраивается под ширину числа, чтобы сумма и знак валюты стояли по центру
+function fitAmount(){
+  const amt = $('#tx-amount', sheetEl), m = $('#tx-measure', sheetEl);
+  if (!amt || !m) return;
+  m.textContent = amt.value || amt.placeholder;
+  amt.style.width = Math.ceil(m.getBoundingClientRect().width + 4) + 'px';
 }
 function renderTxType(){ for (const b of $('#tx-type', sheetEl).children) b.classList.toggle('on', b.dataset.type === draft.type); }
 function renderTxCur(){
