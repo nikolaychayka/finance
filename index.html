@@ -111,6 +111,49 @@ h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
 .warn{background:rgba(255,159,10,.14);color:#FFB340;border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:12px}
 .foot{color:var(--muted2);font-size:13px;text-align:center;margin:26px 0 6px}
 
+/* analysis */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border-radius:14px;padding:12px 14px}
+.stat small{color:var(--muted);font-size:13px;display:block}
+.stat b{display:block;font-size:22px;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:13px}
+.strat-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(10,132,255,.16);color:#5AB0FF;border-radius:16px;padding:5px 12px;font-size:14px;font-weight:500;margin-bottom:12px}
+.card-title{font-size:17px;font-weight:600;margin-bottom:4px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:4px 0 6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.crow{display:block;width:100%;padding:10px 0;border-bottom:.5px solid var(--sep)}
+.crow:last-child{border-bottom:0}
+.crow-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:15px;margin-bottom:7px}
+.crow-top .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow-top .vl{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:14px}
+.trk{position:relative;height:10px;border-radius:5px;background:var(--card2)}
+.trk .ok{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--accent)}
+.trk .ov{position:absolute;top:0;bottom:0;border-radius:0 5px 5px 0;background:#FF9F0A}
+.trk .mk{position:absolute;top:-4px;width:3px;height:18px;margin-left:-1px;border-radius:2px;background:#fff}
+.crow.prot .trk .ok{background:#48484A}
+.split-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--card2);margin:10px 0 8px}
+.split-leg{display:grid;grid-template-columns:1fr;gap:6px;font-size:14px}
+.split-leg div{display:flex;justify-content:space-between}
+.split-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.tip{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:.5px solid var(--sep);font-size:15px}
+.tip:last-child{border-bottom:0}
+.tip .ic{width:34px;height:34px;font-size:18px}
+.trend{width:100%;height:auto;display:block}
+.trend text{fill:#8E8E93;font-size:10px;font-family:inherit}
+.notice{background:rgba(10,132,255,.12);color:#8EC5FF;border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:14px}
+
+/* strategy settings */
+.radio{width:22px;height:22px;border-radius:50%;border:2px solid #48484A;flex:none}
+.radio.on{border-color:var(--accent);background:radial-gradient(circle,var(--accent) 0 45%,transparent 50%)}
+.param{background:var(--card2);border-radius:12px;padding:4px 14px;margin:2px 0 12px}
+.param .field input{font-variant-numeric:tabular-nums}
+.sum-line{font-size:13px;padding:8px 0 10px;color:var(--muted)}
+.sum-line.bad{color:#FF9F0A}
+.back{color:var(--accent);font-size:17px;margin-top:12px;display:inline-block}
+.chk{width:24px;height:24px;border-radius:50%;border:2px solid #48484A;flex:none;display:grid;place-items:center;font-size:14px;color:#fff}
+.chk.on{background:var(--accent);border-color:var(--accent)}
+.lim-in{width:110px;flex:none!important;background:var(--card2)!important;border-radius:8px!important;padding:6px 10px!important;text-align:right}
+
 /* install banner */
 .install{display:flex;gap:12px;align-items:flex-start;background:var(--card);border-radius:16px;padding:14px;margin-bottom:14px;font-size:15px}
 .install .x{color:var(--muted);font-size:20px;line-height:1;margin-left:auto}
@@ -208,6 +251,8 @@ h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
   <div id="hist-list"></div>
 </section>
 
+<section class="screen" id="screen-analysis" hidden></section>
+
 <section class="screen" id="screen-categories" hidden></section>
 
 <section class="screen" id="screen-settings" hidden></section>
@@ -226,9 +271,9 @@ h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     </button>
   </div>
-  <button class="tab" data-a="tab" data-tab="categories">
-    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2.2"/><rect x="13" y="3" width="8" height="8" rx="2.2"/><rect x="3" y="13" width="8" height="8" rx="2.2"/><circle cx="17" cy="17" r="4.2"/></svg>
-    Категории
+  <button class="tab" data-a="tab" data-tab="analysis">
+    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4.6" height="9" rx="1.6"/><rect x="9.7" y="7" width="4.6" height="14" rx="1.6"/><rect x="16.4" y="3" width="4.6" height="18" rx="1.6"/></svg>
+    Анализ
   </button>
   <button class="tab" data-a="tab" data-tab="settings">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
@@ -242,7 +287,7 @@ h1{font-size:34px;font-weight:700;margin:14px 0 10px;letter-spacing:.2px}
 <script>
 'use strict';
 /* ============ Справочники ============ */
-const APP_VERSION = '1.3';
+const APP_VERSION = '1.4';
 const KEY = 'finapp.v1';
 
 const CURRENCIES = {
@@ -326,12 +371,15 @@ let toastTimer;
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 2600); }
 
 /* ============ Данные ============ */
+function defaultStrategy(){
+  return {type:'503020', custom:{needs:50, wants:30, savings:20}, cutPct:10, goal:500, limits:{}, protected:['mandatory','health']};
+}
 function defaultState(){
   return {
     v:1,
     txs:[],
     cats: DEFAULT_CATS.map(c => ({...c})),
-    settings:{display:'GEL', currencies:['GEL','USD','EUR'], lastCurrency:'GEL', lastBackup:null, installHidden:false},
+    settings:{display:'GEL', currencies:['GEL','USD','EUR'], lastCurrency:'GEL', lastBackup:null, installHidden:false, strategy:defaultStrategy()},
     rates:{gelPer:{...FALLBACK_GEL_PER}, date:null, source:'approx', fetchedAt:0},
     rateCache:{}
   };
@@ -340,6 +388,7 @@ function migrate(d){
   const def = defaultState();
   if (!d || typeof d !== 'object') return def;
   d.settings = {...def.settings, ...(d.settings || {})};
+  d.settings.strategy = {...defaultStrategy(), ...(d.settings.strategy || {})};
   if (!Array.isArray(d.settings.currencies) || !d.settings.currencies.includes('GEL')) d.settings.currencies = ['GEL', ...(d.settings.currencies || []).filter(c => c !== 'GEL')];
   d.rates = (d.rates && d.rates.gelPer) ? d.rates : def.rates;
   d.rateCache = d.rateCache || {};
@@ -430,7 +479,7 @@ const val = t => S.settings.display === 'USD' ? t.usd : t.gel;
 const monthTx = () => S.txs.filter(t => t.date.slice(0,7) === UI.month);
 const sortTx = arr => arr.sort((a,b) => b.date.localeCompare(a.date) || (b.createdAt||0) - (a.createdAt||0));
 
-function renderAll(){ renderOverview(); renderHistory(); renderCategories(); renderSettings(); }
+function renderAll(){ renderOverview(); renderHistory(); renderAnalysis(); renderCategories(); renderSettings(); }
 
 function txRow(t, withDate){
   const c = catById(t.categoryId), D = S.settings.display;
@@ -565,6 +614,10 @@ function renderSettings(){
 
   $('#screen-settings').innerHTML = `
     <h1>Настройки</h1>
+    <div class="group-title">Стратегия экономии</div>
+    ${strategySettings()}
+    <p class="hint" style="margin:-6px 16px 0">От выбора зависят цели на графике во вкладке «Анализ».</p>
+
     <div class="group-title">Валюта итогов</div>
     <div class="card">
       <div class="seg" style="margin:0">
@@ -588,6 +641,11 @@ function renderSettings(){
       <p class="hint">Эти валюты будут предлагаться при добавлении операции.</p>
     </div>
 
+    <div class="group-title">Категории</div>
+    <div class="card list">
+      <button class="set-row" data-a="tab" data-tab="categories"><span>Категории расходов и доходов</span><span class="val">${S.cats.length} ›</span></button>
+    </div>
+
     <div class="group-title">Данные</div>
     <div class="card list">
       <button class="set-row btn-row" data-a="export"><span>Сохранить копию</span><span class="val" style="font-size:14px">${lastBackup}</span></button>
@@ -597,6 +655,7 @@ function renderSettings(){
     <p class="hint" style="margin:-6px 16px 0">Данные хранятся только на этом iPhone. Сохраняйте резервную копию в «Файлы» или iCloud Drive раз в пару недель.</p>
     <p class="foot">Мои финансы · версия ${APP_VERSION}</p>
   `;
+  wireStrategyInputs();
 }
 
 
@@ -609,12 +668,334 @@ function renderCategories(){
       <span class="chev">›</span>
     </button>`).join('') + `<button class="set-row btn-row" data-a="cat-add" data-type="${type}">＋ Добавить категорию</button>`;
   $('#screen-categories').innerHTML = `
+    <button class="back" data-a="tab" data-tab="settings">‹ Настройки</button>
     <h1>Категории</h1>
     <div class="group-title">Расходы</div>
     <div class="card list">${catRows('expense')}</div>
     <div class="group-title">Доходы</div>
     <div class="card list">${catRows('income')}</div>
     <p class="hint" style="margin:0 16px">Нажмите на категорию, чтобы изменить название, иконку или цвет.</p>`;
+}
+
+
+/* ---------- Анализ и стратегии экономии ---------- */
+const STRATS = {
+  '503020': {name:'Правило 50/30/20', desc:'50% — обязательное, 30% — желания, 20% — сбережения'},
+  custom:   {name:'Свои пропорции',   desc:'Вы сами задаёте доли дохода'},
+  cut:      {name:'Сократить траты',  desc:'Тратить на X% меньше, чем обычно'},
+  goal:     {name:'Накопить сумму',   desc:'Откладывать фиксированную сумму каждый месяц'},
+  limits:   {name:'Лимиты по категориям', desc:'Свой месячный лимит на каждую категорию'}
+};
+const GROUP_COLORS = {needs:'#5E5CE6', wants:'#FF375F', savings:'#64D2FF'};
+const ADVICE = {
+  mandatory:'Проверьте подписки и тарифы связи — часто можно отказаться от лишнего.',
+  food:'Составляйте список продуктов и реже заказывайте доставку.',
+  transport:'Для частых поездок сравните такси с общественным транспортом.',
+  health:'Спросите в аптеке аналоги лекарств — они бывают заметно дешевле.',
+  fun:'Задайте сумму на развлечения на неделю и держитесь её.',
+  shopping:'Перед покупкой подождите 2 дня — импульсные желания часто проходят.',
+  gifts:'Планируйте подарки заранее, чтобы не переплачивать в последний момент.',
+  education:'Поищите бесплатные курсы и материалы по теме.',
+  other:'Посмотрите, что попадает в «Прочее» — возможно, стоит завести отдельную категорию.'
+};
+const mR = (v, cur) => money(Math.round(v), cur);
+const advice = c => ADVICE[c.id] || 'Попробуйте поставить на эту категорию недельный лимит.';
+const gelToDisp = g => S.settings.display === 'USD' ? g / (S.rates.gelPer.USD || 1) : g;
+const isProt = id => S.settings.strategy.protected.includes(id);
+const groupOf = id => catById(id).group || 'wants';
+
+function sumsFor(ym, inGel){
+  const r = {inc:0, exp:0, cats:{}, groups:{needs:0, wants:0, savings:0}};
+  for (const t of S.txs){
+    if (t.date.slice(0,7) !== ym) continue;
+    const v = inGel ? t.gel : val(t);
+    if (t.type === 'income'){ r.inc += v; continue; }
+    r.exp += v; r.cats[t.categoryId] = (r.cats[t.categoryId]||0) + v;
+    r.groups[groupOf(t.categoryId)] += v;
+  }
+  return r;
+}
+// Средние траты за до 3 прошлых месяцев, в которых были расходы
+function baseline(ym, inGel){
+  const ms = [1,2,3].map(i => sumsFor(shiftMonth(ym, -i), inGel)).filter(m => m.exp > 0);
+  if (!ms.length) return null;
+  const cats = {}; let inc = 0, exp = 0;
+  for (const m of ms){ inc += m.inc; exp += m.exp; for (const [k,v] of Object.entries(m.cats)) cats[k] = (cats[k]||0) + v; }
+  for (const k in cats) cats[k] /= ms.length;
+  return {months:ms.length, inc:inc/ms.length, exp:exp/ms.length, cats};
+}
+// Распределить сокращение пропорционально весам (не больше веса категории)
+function spreadCut(amount, ids, w){
+  const tot = ids.reduce((s,i) => s + (w[i]||0), 0), r = {};
+  if (tot <= 0 || amount <= 0) return r;
+  for (const i of ids) r[i] = Math.min(w[i]||0, amount * (w[i]||0) / tot);
+  return r;
+}
+function analyze(){
+  const st = S.settings.strategy, cur = sumsFor(UI.month), base = baseline(UI.month);
+  const spendCats = catsOf('expense').filter(c => c.group !== 'savings');
+  const act = id => cur.cats[id] || 0;
+  const target = {}, extra = {}; let notice = null;
+  const scaleOrCut = (ids, allowed, cutOrder) => {
+    const spend = ids.reduce((s,i) => s + act(i), 0);
+    if (spend > allowed){
+      const w = {}; for (const i of ids) w[i] = act(i);
+      let left = spend - allowed; const cut = {};
+      for (const group of cutOrder){
+        const c = spreadCut(left, group, w);
+        for (const [k,v] of Object.entries(c)){ cut[k] = (cut[k]||0) + v; w[k] -= v; left -= v; }
+      }
+      for (const i of ids) target[i] = act(i) - (cut[i]||0);
+    } else if (spend > 0){
+      for (const i of ids) if (act(i) > 0) target[i] = act(i) * allowed / spend;
+    }
+  };
+  if (st.type === '503020' || st.type === 'custom'){
+    const p = st.type === '503020' ? {needs:50, wants:30, savings:20} : st.custom;
+    extra.shares = p;
+    if (cur.inc <= 0) notice = 'Добавьте доходы за этот месяц — правило считается от дохода.';
+    else for (const g of ['needs','wants']){
+      const ids = spendCats.filter(c => c.group === g).map(c => c.id);
+      scaleOrCut(ids, cur.inc * p[g] / 100, [ids.filter(i => !isProt(i))]);
+    }
+  } else if (st.type === 'cut'){
+    if (!base) notice = 'Нужна история хотя бы за один прошлый месяц, чтобы сравнивать с обычными тратами.';
+    else {
+      const ids = spendCats.map(c => c.id);
+      const baseTot = ids.reduce((s,i) => s + (base.cats[i]||0), 0);
+      const cut = spreadCut(baseTot * st.cutPct / 100, ids.filter(i => !isProt(i)), base.cats);
+      for (const i of ids) if (base.cats[i] > 0) target[i] = base.cats[i] - (cut[i]||0);
+      extra.baseTot = baseTot; extra.targetTot = baseTot * (1 - st.cutPct/100);
+    }
+  } else if (st.type === 'goal'){
+    const N = gelToDisp(st.goal || 0); extra.goal = N;
+    const inc = cur.inc > 0 ? cur.inc : (base ? base.inc : 0);
+    if (inc <= 0) notice = 'Добавьте доходы — без них не посчитать, сколько можно тратить.';
+    else {
+      if (cur.inc <= 0) notice = 'Доходов за этот месяц пока нет — расчёт по вашему среднему доходу.';
+      const ids = spendCats.map(c => c.id);
+      const allowed = Math.max(0, inc - N); extra.allowed = allowed;
+      scaleOrCut(ids, allowed, [ids.filter(i => !isProt(i) && groupOf(i) === 'wants'), ids.filter(i => !isProt(i) && groupOf(i) === 'needs')]);
+    }
+  } else if (st.type === 'limits'){
+    for (const c of spendCats){ const l = st.limits[c.id]; if (l > 0) target[c.id] = gelToDisp(l); }
+    if (!Object.keys(target).length) notice = 'Задайте лимиты для категорий в настройках.';
+  }
+  const rows = spendCats.map(c => ({cat:c, actual:act(c.id), target:target[c.id], prot:isProt(c.id), avg: base ? (base.cats[c.id]||0) : 0}))
+    .filter(r => r.actual > 0 || r.target > 0);
+  const over = r => r.target == null ? 0 : Math.max(0, r.actual - r.target);
+  rows.sort((a,b) => over(b) - over(a) || b.actual - a.actual);
+  let saveable = 0; for (const r of rows) if (!r.prot) saveable += over(r);
+  return {st, cur, base, rows, saveable, notice, extra};
+}
+function analysisTips(a){
+  const D = S.settings.display, out = [];
+  for (const r of a.rows){
+    if (r.prot || r.target == null) continue;
+    const ov = r.actual - r.target;
+    if (ov > 0.5){
+      const pct = r.target > 0 ? Math.round(ov / r.target * 100) : null;
+      out.push({c:r.cat, html:`<b>${esc(r.cat.name)}</b>: сверх плана на ${mR(ov, D)}${pct ? ` (+${pct}%)` : ''}. ${advice(r.cat)}`});
+    }
+  }
+  for (const r of a.rows){
+    if (r.prot || !(r.avg > 0) || out.some(o => o.c && o.c.id === r.cat.id)) continue;
+    if (r.actual > r.avg * 1.25 && r.actual - r.avg >= 1)
+      out.push({c:r.cat, html:`<b>${esc(r.cat.name)}</b>: уже на ${Math.round((r.actual / r.avg - 1) * 100)}% больше, чем обычно за месяц (в среднем ${mR(r.avg, D)}).`});
+  }
+  const saved = a.cur.groups.savings;
+  if (a.extra.shares && a.cur.inc > 0){
+    const needsPct = Math.round(a.cur.groups.needs / a.cur.inc * 100);
+    if (needsPct > a.extra.shares.needs + 2) out.push({e:'🏠', html:`Обязательные траты — <b>${needsPct}%</b> дохода при цели ${a.extra.shares.needs}%. Если сократить их не получается, выберите в настройках «Свои пропорции».`});
+  }
+  if (a.extra.shares && a.cur.inc > 0){
+    const need = a.cur.inc * a.extra.shares.savings / 100;
+    if (saved + 0.5 < need) out.push({e:'💰', html:`Отложено ${mR(saved, D)} — до цели ${a.extra.shares.savings}% дохода не хватает <b>${mR(need - saved, D)}</b>. Когда откладываете деньги, записывайте это в категорию «Сбережения».`});
+  }
+  if (a.st.type === 'goal' && a.extra.goal > 0){
+    if (saved + 0.5 < a.extra.goal) out.push({e:'🎯', html:`Цель месяца — отложить ${mR(a.extra.goal, D)}. Пока отложено ${mR(saved, D)}, осталось <b>${mR(a.extra.goal - saved, D)}</b>.`});
+    else out.push({e:'🎉', html:`Цель месяца выполнена: отложено ${mR(saved, D)}.`});
+  }
+  if (!out.length && a.rows.length) out.push({e:'✅', html:'Вы укладываетесь в план. Так держать!'});
+  return out;
+}
+function trendChart(){
+  const D = S.settings.display, months = [5,4,3,2,1,0].map(i => shiftMonth(UI.month, -i));
+  const data = months.map(m => ({m, ...sumsFor(m)}));
+  const max = Math.max(1, ...data.map(d => Math.max(d.exp, d.inc)));
+  const W = 340, H = 150, top = 14, bottom = 24, bw = 30, step = W / 6;
+  let bars = '';
+  data.forEach((d, i) => {
+    const x = step * i + (step - bw) / 2; let y = H - bottom;
+    for (const g of ['needs','wants','savings']){
+      const h = d.groups[g] / max * (H - top - bottom); if (h <= 0) continue;
+      y -= h; bars += `<rect x="${x}" y="${y}" width="${bw}" height="${h}" fill="${GROUP_COLORS[g]}" opacity="${d.m === UI.month ? 1 : .55}"/>`;
+    }
+    if (d.inc > 0){ const iy = H - bottom - d.inc / max * (H - top - bottom); bars += `<rect x="${x - 4}" y="${iy - 1.5}" width="${bw + 8}" height="3" rx="1.5" fill="#30D158"/>`; }
+    const [yy, mm] = d.m.split('-').map(Number);
+    bars += `<text x="${x + bw/2}" y="${H - 8}" text-anchor="middle" ${d.m === UI.month ? 'style="fill:#fff;font-weight:600"' : ''}>${MONTHS[mm-1].slice(0,3).toLowerCase()}</text>`;
+    bars += `<rect x="${step * i}" y="0" width="${step}" height="${H}" fill="transparent" data-a="trend-month" data-m="${d.m}" style="cursor:pointer"/>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="trend" role="img" aria-label="Расходы за полгода">${bars}</svg>`;
+}
+function renderAnalysis(){
+  const el = $('#screen-analysis'); if (!el) return;
+  const D = S.settings.display, a = analyze(), st = a.st;
+  const maxV = Math.max(1, ...a.rows.map(r => Math.max(r.actual, r.target || 0)));
+  const rowHtml = r => {
+    const hasPlan = r.target != null && !r.prot;
+    const okW = (hasPlan ? Math.min(r.actual, r.target) : r.actual) / maxV * 100;
+    const ovW = hasPlan && r.actual > r.target ? (r.actual - r.target) / maxV * 100 : 0;
+    const mk = hasPlan ? `<span class="mk" style="left:${Math.min(100, r.target / maxV * 100)}%"></span>` : '';
+    let right;
+    if (r.prot) right = `${mR(r.actual, D)} <span class="muted">· 🔒</span>`;
+    else if (r.target == null) right = `${mR(r.actual, D)} <span class="muted">· без лимита</span>`;
+    else if (r.actual > r.target + 0.5) right = `${mR(r.actual, D)} <span style="color:#FF9F0A">+${mR(r.actual - r.target, D)}</span>`;
+    else if (r.target - r.actual < 1) right = `${mR(r.actual, D)} <span class="muted">· на пределе</span>`;
+    else right = `${mR(r.actual, D)} <span class="green">· осталось ${mR(r.target - r.actual, D)}</span>`;
+    return `<button class="crow ${r.prot ? 'prot' : ''}" data-a="cat-history" data-id="${esc(r.cat.id)}" data-type="expense">
+      <div class="crow-top"><span class="nm">${esc(r.cat.emoji)} ${esc(r.cat.name)}</span><span class="vl">${right}</span></div>
+      <div class="trk"><span class="ok" style="width:${okW}%;${ovW ? 'border-radius:5px 0 0 5px' : ''}"></span>${ovW ? `<span class="ov" style="left:${okW}%;width:${ovW}%"></span>` : ''}${mk}</div>
+    </button>`;
+  };
+  // вторая карточка сводки зависит от стратегии
+  let stat2 = '';
+  const inc = a.cur.inc, saved = a.cur.groups.savings;
+  if (a.extra.shares){
+    const pct = inc > 0 ? Math.round(saved / inc * 100) : 0;
+    stat2 = `<small>Отложено</small><b>${pct}% <span>из ${a.extra.shares.savings}%</span></b>`;
+  } else if (st.type === 'cut'){
+    const diff = a.extra.baseTot ? Math.round((a.cur.exp - (a.base ? a.base.exp : 0)) / (a.base.exp || 1) * 100) : null;
+    stat2 = `<small>Цель: тратить</small><b>−${st.cutPct}% <span>${a.extra.targetTot ? '≤ ' + mR(a.extra.targetTot, D) : ''}</span></b>`;
+  } else if (st.type === 'goal'){
+    stat2 = `<small>Отложено</small><b>${mR(saved, D)} <span>из ${mR(a.extra.goal || 0, D)}</span></b>`;
+  } else {
+    const withLim = a.rows.filter(r => r.target != null), overN = withLim.filter(r => r.actual > r.target + 0.5).length;
+    stat2 = `<small>Превышено лимитов</small><b>${overN} <span>из ${withLim.length}</span></b>`;
+  }
+  let split = '';
+  if (a.extra.shares && inc > 0){
+    const parts = ['needs','wants','savings'].map(g => ({g, v:a.cur.groups[g], pct:a.cur.groups[g] / inc * 100, goal:a.extra.shares[g]}));
+    const free = Math.max(0, 100 - parts.reduce((s,p) => s + p.pct, 0));
+    split = `<div class="card">
+      <div class="card-title">Доход по стратегии</div>
+      <div class="split-bar">${parts.map(p => `<span style="width:${Math.min(100, p.pct)}%;background:${GROUP_COLORS[p.g]}"></span>`).join('')}</div>
+      <div class="split-leg">${parts.map(p => `<div><span><i style="background:${GROUP_COLORS[p.g]}"></i>${GROUPS[p.g]}</span><span>${Math.round(p.pct)}% <span class="muted">· цель ${p.goal}%</span></span></div>`).join('')}
+        <div><span class="muted"><i style="background:#3A3A3C"></i>Не потрачено</span><span class="muted">${Math.round(free)}%</span></div></div>
+    </div>`;
+  }
+  const tips = analysisTips(a);
+  el.innerHTML = `
+    <h1>Анализ</h1>
+    ${monthSwitch()}
+    <button class="strat-pill" data-a="go-settings">${STRATS[st.type].name}${st.type === 'cut' ? ' на ' + st.cutPct + '%' : ''} ›</button>
+    ${a.notice ? `<div class="notice">${a.notice}</div>` : ''}
+    <div class="stats">
+      <div class="stat"><small>Можно сэкономить</small><b class="green">${mR(a.saveable, D)}</b></div>
+      <div class="stat">${stat2}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Расходы и план</div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>в пределах</span><span><i style="background:#FF9F0A"></i>перерасход</span><span><i style="background:#fff;width:3px"></i>план на месяц</span></div>
+      ${a.rows.length ? a.rows.map(rowHtml).join('') : `<div class="empty"><span class="e">📊</span>За ${monthLabel(UI.month).toLowerCase()} пока нет расходов.</div>`}
+    </div>
+    ${split}
+    ${tips.length ? `<div class="card"><div class="card-title">Где сэкономить</div>
+      ${tips.map(t => `<div class="tip"><span class="ic" style="background:${t.c ? t.c.color + '33' : '#2C2C2E'}">${esc(t.c ? t.c.emoji : t.e)}</span><span>${t.html}</span></div>`).join('')}</div>` : ''}
+    <div class="card">
+      <div class="card-title">Расходы за полгода</div>
+      <div class="legend">${['needs','wants','savings'].map(g => `<span><i style="background:${GROUP_COLORS[g]}"></i>${GROUPS[g]}</span>`).join('')}<span><i style="background:#30D158;height:3px;vertical-align:3px"></i>доход</span></div>
+      ${trendChart()}
+    </div>
+    <p class="hint" style="margin:0 16px">Тип расхода (обязательное, желания, сбережения) меняется в настройках категории.</p>
+  `;
+}
+
+/* ---------- Настройки стратегии ---------- */
+function strategySettings(){
+  const st = S.settings.strategy;
+  let params = '';
+  if (st.type === 'custom'){
+    const sum = st.custom.needs + st.custom.wants + st.custom.savings;
+    params = `<div class="param">
+      ${['needs','wants','savings'].map(g => `<label class="field"><span>${GROUPS[g]}, %</span><input class="custom-pct" data-g="${g}" inputmode="numeric" value="${st.custom[g]}" maxlength="3"></label>`).join('')}
+      <div class="sum-line ${sum !== 100 ? 'bad' : ''}" id="custom-sum">${sumText(sum)}</div></div>`;
+  } else if (st.type === 'cut'){
+    params = `<div class="param" style="padding:12px 14px"><div class="chips wrap">${[5,10,15,20,30].map(p => `<button class="chip ${st.cutPct === p ? 'on' : ''}" data-a="cut-pct" data-p="${p}">−${p}%</button>`).join('')}</div>
+      <div class="sum-line" style="padding-bottom:0">Сравниваем с вашими средними тратами за прошлые месяцы.</div></div>`;
+  } else if (st.type === 'goal'){
+    params = `<div class="param"><label class="field"><span>Откладывать в месяц, ₾</span><input id="goal-in" inputmode="decimal" value="${String(st.goal).replace('.', ',')}"></label></div>`;
+  } else if (st.type === 'limits'){
+    const n = Object.values(st.limits).filter(v => v > 0).length;
+    params = `<div class="param"><button class="set-row btn-row" data-a="open-limits"><span>Настроить лимиты</span><span class="val">${n ? 'задано: ' + n : 'не заданы'} ›</span></button></div>`;
+  }
+  const protNames = st.protected.map(id => catById(id)).filter(c => c.id !== '?').map(c => c.name);
+  return `<div class="card list">
+    ${Object.entries(STRATS).map(([k, v]) => `
+      <button class="set-row" data-a="strat" data-s="${k}">
+        <span class="grow"><span class="t">${v.name}</span><span class="sub">${v.desc}</span></span>
+        <span class="radio ${st.type === k ? 'on' : ''}"></span>
+      </button>
+      ${st.type === k ? params : ''}`).join('')}
+    <button class="set-row" data-a="open-prot"><span class="grow"><span class="t">Не трогать категории</span><span class="sub">${protNames.length ? esc(protNames.join(', ')) : 'Экономить можно на всём'}</span></span><span class="chev">›</span></button>
+  </div>`;
+}
+function sumText(sum){ return sum === 100 ? 'Сумма: 100% ✓' : `Сумма: ${sum}% — должно получиться 100%`; }
+function wireStrategyInputs(){
+  const st = S.settings.strategy;
+  for (const inp of document.querySelectorAll('.custom-pct')){
+    inp.addEventListener('input', () => {
+      inp.value = inp.value.replace(/\D/g, '').slice(0,3);
+      st.custom[inp.dataset.g] = Math.min(100, parseInt(inp.value || '0', 10));
+      const sum = st.custom.needs + st.custom.wants + st.custom.savings, el = $('#custom-sum');
+      el.textContent = sumText(sum); el.classList.toggle('bad', sum !== 100);
+      save(); renderAnalysis();
+    });
+  }
+  const g = $('#goal-in');
+  if (g) g.addEventListener('input', () => {
+    g.value = g.value.replace(/[^\d.,]/g, '');
+    const v = parseAmount(g.value); st.goal = v > 0 ? v : 0; save(); renderAnalysis();
+  });
+  for (const inp of document.querySelectorAll('#screen-settings input')) inp.addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
+}
+function openLimitsSheet(){
+  const base = baseline(todayStr().slice(0,7), true), st = S.settings.strategy;
+  const cats = catsOf('expense').filter(c => c.group !== 'savings');
+  openSheet(`
+    <div class="sheet-head"><button class="link" data-a="close">Отмена</button><b>Лимиты на месяц</b><button class="link strong" data-a="save-limits">Готово</button></div>
+    <p class="hint" style="margin:0 4px 6px">Суммы в лари. Пустое поле — без лимита.</p>
+    <div class="card inset" style="margin-top:8px">
+      ${cats.map(c => `<label class="field"><span style="display:flex;align-items:center;gap:10px;min-width:0"><span class="ic" style="background:${c.color}33;width:32px;height:32px;font-size:17px">${esc(c.emoji)}</span><span style="display:flex;flex-direction:column;min-width:0"><span>${esc(c.name)}</span>${base && base.cats[c.id] ? `<span class="sub">обычно ≈ ${money(base.cats[c.id], 'GEL')}</span>` : ''}</span></span>
+        <input class="lim-in" data-id="${esc(c.id)}" inputmode="decimal" placeholder="—" value="${st.limits[c.id] ? String(st.limits[c.id]).replace('.', ',') : ''}"></label>`).join('')}
+    </div>
+    ${base ? '<button class="btn danger" style="background:rgba(10,132,255,.14);color:var(--accent)" data-a="limits-fill">Заполнить по средним тратам</button>' : ''}
+    <button class="btn primary" data-a="save-limits">Сохранить</button>`);
+}
+function fillLimitsFromAverage(){
+  const base = baseline(todayStr().slice(0,7), true); if (!base) return;
+  for (const inp of sheetEl.querySelectorAll('.lim-in')){ const v = base.cats[inp.dataset.id]; if (v > 0) inp.value = String(Math.round(v / 10) * 10 || Math.round(v)); }
+  toast('Подставлены средние траты — можно уменьшить');
+}
+function saveLimits(){
+  const lim = {};
+  for (const inp of sheetEl.querySelectorAll('.lim-in')){ const v = parseAmount(inp.value); if (v > 0) lim[inp.dataset.id] = round(v, 2); }
+  S.settings.strategy.limits = lim; save(); closeSheet(); renderSettings(); renderAnalysis(); toast('Лимиты сохранены');
+}
+function openProtSheet(){
+  openSheet(`
+    <div class="sheet-head"><span></span><b>Не трогать</b><button class="link strong" data-a="close">Готово</button></div>
+    <p class="hint" style="margin:0 4px 6px">На этих категориях приложение не будет предлагать экономить — например, аренда или лекарства.</p>
+    <div class="card inset" id="prot-list" style="margin-top:8px"></div>`);
+  renderProtList();
+}
+function renderProtList(){
+  const el = sheetEl && $('#prot-list', sheetEl); if (!el) return;
+  el.innerHTML = catsOf('expense').filter(c => c.group !== 'savings').map(c => `
+    <button class="field" style="width:100%" data-a="prot-toggle" data-id="${esc(c.id)}">
+      <span style="display:flex;align-items:center;gap:10px"><span class="ic" style="background:${c.color}33;width:32px;height:32px;font-size:17px">${esc(c.emoji)}</span>${esc(c.name)}</span>
+      <span class="chk ${isProt(c.id) ? 'on' : ''}">${isProt(c.id) ? '✓' : ''}</span>
+    </button>`).join('');
 }
 
 /* ============ Шторки (sheets) ============ */
@@ -844,8 +1225,9 @@ function importData(file){
 /* ============ Навигация и события ============ */
 function setTab(tab){
   UI.tab = tab;
-  for (const n of ['overview','history','categories','settings']) $('#screen-'+n).hidden = n !== tab;
-  for (const b of document.querySelectorAll('.tab')) b.classList.toggle('on', b.dataset.tab === tab);
+  for (const n of ['overview','history','analysis','categories','settings']) $('#screen-'+n).hidden = n !== tab;
+  const hl = tab === 'categories' ? 'settings' : tab;
+  for (const b of document.querySelectorAll('.tab')) b.classList.toggle('on', b.dataset.tab === hl);
   window.scrollTo(0,0);
 }
 document.addEventListener('click', async e => {
@@ -855,7 +1237,20 @@ document.addEventListener('click', async e => {
     case 'tab': setTab(b.dataset.tab); break;
     case 'add': openTxSheet(null); break;
     case 'close': closeSheet(); break;
-    case 'month': UI.month = shiftMonth(UI.month, +b.dataset.d); renderOverview(); renderHistory(); break;
+    case 'month': UI.month = shiftMonth(UI.month, +b.dataset.d); renderOverview(); renderHistory(); renderAnalysis(); break;
+    case 'trend-month': UI.month = b.dataset.m; renderOverview(); renderHistory(); renderAnalysis(); break;
+    case 'strat': S.settings.strategy.type = b.dataset.s; save(); renderSettings(); renderAnalysis(); break;
+    case 'cut-pct': S.settings.strategy.cutPct = +b.dataset.p; save(); renderSettings(); renderAnalysis(); break;
+    case 'open-limits': openLimitsSheet(); break;
+    case 'limits-fill': fillLimitsFromAverage(); break;
+    case 'save-limits': saveLimits(); break;
+    case 'open-prot': openProtSheet(); break;
+    case 'prot-toggle': {
+      const st = S.settings.strategy, id = b.dataset.id;
+      st.protected = st.protected.includes(id) ? st.protected.filter(x => x !== id) : [...st.protected, id];
+      save(); renderProtList(); renderSettings(); renderAnalysis(); break;
+    }
+    case 'go-settings': setTab('settings'); break;
     case 'display': S.settings.display = b.dataset.cur; save(); renderAll(); break;
     case 'ov-type': UI.ovType = b.dataset.type; renderOverview(); break;
     case 'cat-history': UI.hf = {type:b.dataset.type, cat:b.dataset.id, q:''}; $('#hist-q').value = ''; renderHistory(); setTab('history'); break;
